@@ -9,8 +9,8 @@ const exec = require('child_process').exec;
 
 const HOST = 'https://www.ticketswap.com';
 const EVENT_URL = '/event/we-love-green-2018/saturday/d5b8946f-67bf-4726-96f4-b58f479f3004/671316';
-const CHECK_INTERVAL_MIN = 30000
-const CHECK_INTERVAL_MAX = 60000
+const CHECK_INTERVAL_MIN = 3000
+const CHECK_INTERVAL_MAX = 6000
 
 let cookieJar = request.jar();
 
