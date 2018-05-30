@@ -32,7 +32,7 @@ let buildRequest = function (uri, method) {
 };
 
 let fetchResult = function (link) {
-  return co(function *() {
+  return co(function* () {
     let result = yield buildRequest(link, 'GET');
 
     return cheerio.load(result.body);
@@ -85,16 +85,26 @@ let app = function () {
     _.each(linksResults, function ($query, url) {
       let counterValue = $query('.counter-available .counter-value').text();
 
-      console.log(parseInt(counterValue, 10));
-
       if ($query('#recaptcha').length > 0) {
         return botAction.robotCheck(url);
+      }
+
+      if (parseInt(counterValue, 10) === 1) {
+        let fetchResultAvailable = function (link) {
+          return co(function* () {
+            let availableOffer = yield buildRequest(HOST + $query('.listings-item--title a').attr('href'), 'GET');
+            let $ = cheerio.load(availableOffer.body);
+            if ($('.listing-unavailable').length) {
+              return botAction.unavailableTicket(HOST + $query('.listings-item--title a').attr('href'));
+            }
+          });
+        };
       }
 
       if (parseInt(counterValue, 10) > 0) {
         return botAction.availableTicket(url, counterValue);
       }
-
+      console.log('NO TICKET')
       return botAction.unavailableTicket(url);
     });
 
