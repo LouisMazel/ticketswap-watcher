@@ -88,7 +88,6 @@ let app = function () {
       if ($query('#recaptcha').length > 0) {
         return botAction.robotCheck(url);
       }
-
       if (parseInt(counterValue, 10) === 1) {
         let fetchResultAvailable = function (link) {
           return co(function* () {
@@ -96,15 +95,17 @@ let app = function () {
             let $ = cheerio.load(availableOffer.body);
             if ($('.listing-unavailable').length) {
               return botAction.unavailableTicket(HOST + $query('.listings-item--title a').attr('href'));
+            } else {
+              return botAction.availableTicket(HOST + $query('.listings-item--title a').attr('href'), '1');
             }
           });
         };
+        return fetchResultAvailable()
       }
 
       if (parseInt(counterValue, 10) > 0) {
         return botAction.availableTicket(url, counterValue);
       }
-      console.log('NO TICKET')
       return botAction.unavailableTicket(url);
     });
 
